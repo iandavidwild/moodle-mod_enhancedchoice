@@ -173,7 +173,7 @@ class mod_enhancedchoice_renderer extends plugin_renderer_base {
             if ($choices->showunanswered && $optionid == 0) {
                 $celltext = format_string(get_string('notanswered', 'enhancedchoice'));
             } else if ($optionid > 0) {
-                $celltext = format_string($choices->options[$optionid]->text);
+                $celltext = clean_text($choices->options[$optionid]->text);
             }
             $numberofuser = 0;
             if (!empty($options->user) && count($options->user) > 0) {
