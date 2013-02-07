@@ -639,7 +639,7 @@ function enhancedchoice_get_view_actions() {
 /**
  * @return array
  */
-function enhanced_choice_get_post_actions() {
+function enhancedchoice_get_post_actions() {
     return array('enhancedchoose','choose again');
 }
 
