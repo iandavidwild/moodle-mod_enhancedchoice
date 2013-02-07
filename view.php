@@ -103,7 +103,7 @@
     //if user has already made a selection, and they are not allowed to update it or if choice is not open, show their selected answer.
     if (isloggedin() && ($current = $DB->get_record('enhancedchoice_answers', array('choiceid' => $choice->id, 'userid' => $USER->id))) &&
         (empty($choice->allowupdate) || ($timenow > $choice->timeclose)) ) {
-        echo $OUTPUT->box(get_string("yourselection", "enhancedchoice", userdate($choice->timeopen)).": ".format_string(enhancedchoice_get_option_text($choice, $current->optionid)), 'generalbox', 'yourselection');
+        echo $OUTPUT->box(get_string("yourselection", "enhancedchoice", userdate($choice->timeopen)).": ".clean_text(enhancedchoice_get_option_text($choice, $current->optionid)), 'generalbox', 'yourselection');
     }
 
 /// Print the form
