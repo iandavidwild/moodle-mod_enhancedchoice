@@ -121,10 +121,10 @@ function enhancedchoice_add_instance($choice) {
     //insert answers
     $choice->id = $DB->insert_record("enhancedchoice", $choice);
     foreach ($choice->option as $key => $value) {
-        if (isset($value) && $value[text] <> '') {
+        if (isset($value) && $value['text'] <> '') {
             $option = new stdClass();
-            $option->text = $value[text];
-            $option->textformat = $value[format];
+            $option->text = $value['text'];
+            $option->textformat = $value['format'];
             $option->choiceid = $choice->id;
             if (isset($choice->limit[$key])) {
                 $option->maxanswers = $choice->limit[$key];
@@ -160,10 +160,10 @@ function enhancedchoice_update_instance($choice) {
 
     //update, delete or insert answers
     foreach ($choice->option as $key => $value) {
-        $value[text] = trim($value[text]);
+        $value['text'] = trim($value['text']);
         $option = new stdClass();
-        $option->text = $value[text];
-        $option->textformat = $value[format];
+        $option->text = $value['text'];
+        $option->textformat = $value['format'];
         $option->choiceid = $choice->id;
         if (isset($choice->limit[$key])) {
             $option->maxanswers = $choice->limit[$key];
@@ -171,13 +171,13 @@ function enhancedchoice_update_instance($choice) {
         $option->timemodified = time();
         if (isset($choice->optionid[$key]) && !empty($choice->optionid[$key])){//existing choice record
             $option->id=$choice->optionid[$key];
-            if (isset($value) && $value[text] <> '') {
+            if (isset($value) && $value['text'] <> '') {
                 $DB->update_record("enhancedchoice_options", $option);
             } else { //empty old option - needs to be deleted.
                 $DB->delete_records("enhancedchoice_options", array("id"=>$option->id));
             }
         } else {
-            if (isset($value) && $value[text] <> '') {
+            if (isset($value) && $value['text'] <> '') {
                 $DB->insert_record("enhancedchoice_options", $option);
             }
         }
