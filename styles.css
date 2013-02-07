@@ -16,6 +16,7 @@
 .path-mod-enhancedchoice .horizontal,
 .path-mod-enhancedchoice .vertical {margin-left: 10%;margin-right: 10%;}
 .path-mod-enhancedchoice .horizontal .choices .option {padding-right:20px;display:inline; white-space: normal;}
+.path-mod-enhancedchoice .horizontal .choices p {padding-right:20px;display:inline; white-space: normal;}
 .path-mod-enhancedchoice .horizontal .choices .button {margin-top: 10px;}
 .path-mod-enhancedchoice ul.choices li {list-style:none;}
 .path-mod-enhancedchoice .results { text-align: center;}
