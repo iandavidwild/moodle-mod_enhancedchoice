@@ -34,8 +34,8 @@ $string['expired'] = 'Sorry, this activity closed on {$a} and is no longer avail
 $string['atleastoneoption'] = 'You need to provide at least one possible answer.';
 $string['full'] = '(Full)';
 $string['havetologin'] = 'You have to log in before you can submit your choice';
-$string['enhanced_choice'] = 'Enhanced Choice';
-$string['enhanced_choice:addinstance'] = 'Add a new choice';
+$string['enhancedchoice'] = 'Enhanced Choice';
+$string['enhancedchoice:addinstance'] = 'Add a new choice';
 $string['choiceclose'] = 'Until';
 $string['enhancedchoice:deleteresponses'] = 'Delete responses';
 $string['enhancedchoice:downloadresponses'] = 'Download responses';
@@ -43,8 +43,8 @@ $string['choicefull'] = 'This choice is full and there are no available places.'
 $string['enhancedchoice:choose'] = 'Record a choice';
 $string['choicename'] = 'Choice name';
 $string['choiceopen'] = 'Open';
-$string['choiceoptions'] = 'Choice options';
-$string['choiceoptions_help'] = 'Here is where you specify the options that participants have to choose from.
+$string['enhancedchoice_options'] = 'Choice options';
+$string['enhancedchoice_options_help'] = 'Here is where you specify the options that participants have to choose from.
 
 You can fill in any number of these. If you leave some of the options blank, they will not be displayed. If you need more than 8 options, click the "Add 3 fields to form" button.';
 $string['limitanswers_help'] = 'This option allows you to limit the number of participants that can select each choice option. When the limit is reached then no-one else can select that option.
