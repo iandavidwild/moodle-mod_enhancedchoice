@@ -154,7 +154,7 @@ class mod_enhancedchoice_renderer extends plugin_renderer_base {
         // This extra cell is needed in order to support accessibility for screenreader. MDL-30816
         $accessiblecell = new html_table_cell();
         $accessiblecell->scope = 'row';
-        $accessiblecell->text = get_string('choiceoptions', 'enhancedchoice');
+        $accessiblecell->text = get_string('enhancedchoice_options', 'enhancedchoice');
         $columns['options'][] = $accessiblecell;
 
         $usernumberheader = clone($celldefault);
