@@ -16,7 +16,7 @@
 
     add_to_log($course->id, "enhancedchoice", "view all", "index.php?id=$course->id", "");
 
-    $strchoice = get_string("modulename", "enahncedchoice");
+    $strchoice = get_string("modulename", "enhancedchoice");
     $strchoices = get_string("modulenameplural", "enhancedchoice");
     $strsectionname  = get_string('sectionname', 'format_'.$course->format);
     $PAGE->set_title($strchoices);
@@ -65,7 +65,7 @@
             $answer = "";
         }
         if (!empty($answer->optionid)) {
-            $aa = format_string(choice_get_option_text($choice, $answer->optionid));
+            $aa = format_string(enhancedchoice_get_option_text($choice, $answer->optionid));
         } else {
             $aa = "";
         }
