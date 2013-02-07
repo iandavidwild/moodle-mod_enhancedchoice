@@ -57,16 +57,16 @@ $string['chooseaction'] = 'Choose an action ...';
 $string['limit'] = 'Limit';
 $string['limitanswers'] = 'Limit the number of responses allowed';
 $string['modulename'] = 'Enhanced Choice';
-$string['modulename_help'] = 'The choice activity module enables a teacher to ask a single question and offer a selection of possible responses.
+$string['modulename_help'] = 'The enhanced choice activity module enables a teacher to ask a single question and offer a selection of possible media rich responses.
 
-Choice results may be published after students have answered, after a certain date, or not at all. Results may be published with student names or anonymously.
+As with the "Choice" module upon which this plug-in is based, results may be published after students have answered, after a certain date, or not at all. Results may be published with student names or anonymously.
 
-A choice activity may be used
+An enhanced choice activity may be used
 
 * As a quick poll to stimulate thinking about a topic
 * To quickly test students\' understanding
 * To facilitate student decision-making, for example allowing students to vote on a direction for the course';
-$string['modulename_link'] = 'mod/choice/view';
+$string['modulename_link'] = 'mod/enhancedchoice/view';
 $string['modulenameplural'] = 'Enhanced Choices';
 $string['moveselectedusersto'] = 'Move selected users to...';
 $string['mustchooseone'] = 'You must choose an answer before saving.  Nothing was saved.';
