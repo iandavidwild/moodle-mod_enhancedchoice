@@ -41,7 +41,7 @@
         	SEQUENCE="false" PREVIOUS="text" NEXT="maxanswers"
         	DEFAULT="0">
 </FIELD>
-      	<FIELD NAME="maxanswers" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="text" NEXT="timemodified"/>
+      	<FIELD NAME="maxanswers" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" PREVIOUS="textformat" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxanswers"/>
       </FIELDS>
       <KEYS>
