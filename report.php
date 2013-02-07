@@ -221,7 +221,7 @@
         $choice->maxanswers[0] = 0;
     }
 
-    $results = prepare_choice_show_results($choice, $course, $cm, $users);
+    $results = prepare_enhancedchoice_show_results($choice, $course, $cm, $users);
     $renderer = $PAGE->get_renderer('mod_enhancedchoice');
     echo $renderer->display_result($results, has_capability('mod/enhancedchoice:readresponses', $context));
 
