@@ -19,7 +19,7 @@
  *
  * @package    mod
  * @subpackage enhancedchoice
- * @copyright  2013 University of London Computer Centre
+ * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}, Ian David Wild {@link http://heavy-horse.co.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

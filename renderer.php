@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -19,9 +18,10 @@
  * Moodle renderer used to display special elements of the lesson module
  *
  * @package   enhancedchoice
- * @copyright 2013 Ian Wild and University of London Computer Centre 
+ * @copyright 2010 onwards Rossiani Wijaya, Ian David Wild {@link http://heavy-horse.co.uk} 
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
+
 define ('DISPLAY_HORIZONTAL_LAYOUT', 0);
 define ('DISPLAY_VERTICAL_LAYOUT', 1);
 
