@@ -18,7 +18,7 @@
  * Plugin capabilities
  *
  * @package    mod_enhancedchoice
- * @copyright  2013 University of London Computer Centre
+ * @copyright  2006 onwards Martin Dougiamas, Ian David Wild {@link http://heavy-horse.co.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

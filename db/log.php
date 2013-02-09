@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -20,7 +19,7 @@
  *
  * @package    mod_enhanced_choice
  * @category   log
- * @copyright  2013 University of London Computer Centre
+ * @copyright  2010 onwards Petr Skoda (http://skodak.org), Ian David Wild {@link http://heavy-horse.co.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
