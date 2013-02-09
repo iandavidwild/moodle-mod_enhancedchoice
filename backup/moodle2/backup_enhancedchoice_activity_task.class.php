@@ -20,7 +20,7 @@
  *
  * @package     mod_enhancedchoice
  * @category    backup
- * @copyright   2013 Ian Wild and University of London Computer Centre
+ * @copyright   2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}, Ian David Wild {@link http://heavy-horse.co.uk}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
