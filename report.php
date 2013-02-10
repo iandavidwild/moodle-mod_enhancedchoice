@@ -103,14 +103,14 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choice","enhancedchoice"));
+        $myxls->write_string(0,4,get_string("enhancedchoice","enhancedchoice"));
 
     /// generate the data for the body of the spreadsheet
         $i=0;
         $row=1;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     $myxls->write_string($row,0,$user->lastname);
                     $myxls->write_string($row,1,$user->firstname);
@@ -156,7 +156,7 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choice","enhancedchoice"));
+        $myxls->write_string(0,4,get_string("enhancedchoice","enhancedchoice"));
 
 
     /// generate the data for the body of the spreadsheet
@@ -164,7 +164,7 @@
         $row=1;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     $myxls->write_string($row,0,$user->lastname);
                     $myxls->write_string($row,1,$user->firstname);
@@ -204,13 +204,13 @@
 
         echo get_string("firstname")."\t".get_string("lastname") . "\t". get_string("idnumber") . "\t";
         echo get_string("group"). "\t";
-        echo get_string("choice","enhancedchoice"). "\n";
+        echo get_string("enhancedchoice","enhancedchoice"). "\n";
 
         /// generate the data for the body of the spreadsheet
         $i=0;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option));
                 foreach($userid as $user) {
                     echo $user->lastname;
                     echo "\t".$user->firstname;
