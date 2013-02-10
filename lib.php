@@ -99,6 +99,16 @@ function enhancedchoice_user_complete($course, $user, $mod, $choice) {
 }
 
 /**
+ * This gets an array with default options for the editor
+ *
+ * @return array the options
+ */
+function enhancedchoice_get_editor_options() {
+	return array('maxfiles' => EDITOR_UNLIMITED_FILES,
+			'trusttext'=>true);
+}
+
+/**
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
@@ -120,9 +130,15 @@ function enhancedchoice_add_instance($choice) {
 
     //insert answers
     $choice->id = $DB->insert_record("enhancedchoice", $choice);
+    
+    $context = context_module::instance($choice->coursemodule);
+    $editoroptions = enhancedchoice_get_editor_options();
+    
     foreach ($choice->option as $key => $value) {
         if (isset($value) && $value['text'] <> '') {
+        	$value['text'] = trim($value['text']);
             $option = new stdClass();
+            
             $option->text = $value['text'];
             $option->textformat = $value['format'];
             $option->choiceid = $choice->id;
@@ -130,7 +146,12 @@ function enhancedchoice_add_instance($choice) {
                 $option->maxanswers = $choice->limit[$key];
             }
             $option->timemodified = time();
-            $DB->insert_record("enhancedchoice_options", $option);
+            $option->id = $DB->insert_record("enhancedchoice_options", $option);
+            $option->text = file_save_draft_area_files($value['itemid'], $context->id,
+            		'mod_enhancedchoice', 'option',
+            		$option->id, $editoroptions, $value['text']);
+            $DB->set_field("enhancedchoice_options", "text", $option->text, array('id' => $option->id));
+            
         }
     }
 
@@ -152,35 +173,46 @@ function enhancedchoice_update_instance($choice) {
     $choice->id = $choice->instance;
     $choice->timemodified = time();
 
-
     if (empty($choice->timerestrict)) {
         $choice->timeopen = 0;
         $choice->timeclose = 0;
     }
 
+    $context = context_module::instance($choice->coursemodule);
+    $editoroptions = enhancedchoice_get_editor_options();
+    
     //update, delete or insert answers
     foreach ($choice->option as $key => $value) {
         $value['text'] = trim($value['text']);
         $option = new stdClass();
+        // process the custom wysiwyg editor uploaded files
         $option->text = $value['text'];
         $option->textformat = $value['format'];
         $option->choiceid = $choice->id;
+        $option->id=$choice->optionid[$key];
+        
         if (isset($choice->limit[$key])) {
             $option->maxanswers = $choice->limit[$key];
         }
         $option->timemodified = time();
+        $option->text = file_save_draft_area_files($value['itemid'], $context->id,
+        		'mod_enhancedchoice', 'option',
+        		$option->id, $editoroptions, $value['text']);
+        
         if (isset($choice->optionid[$key]) && !empty($choice->optionid[$key])){//existing choice record
-            $option->id=$choice->optionid[$key];
             if (isset($value) && $value['text'] <> '') {
                 $DB->update_record("enhancedchoice_options", $option);
             } else { //empty old option - needs to be deleted.
                 $DB->delete_records("enhancedchoice_options", array("id"=>$option->id));
+                continue;
             }
         } else {
             if (isset($value) && $value['text'] <> '') {
                 $DB->insert_record("enhancedchoice_options", $option);
             }
         }
+        
+        
     }
 
     return $DB->update_record('enhancedchoice', $choice);
@@ -196,19 +228,30 @@ function enhancedchoice_update_instance($choice) {
  * @return array
  */
 function enhancedchoice_prepare_options($choice, $user, $coursemodule, $allresponses) {
-    global $DB;
+    global $DB, $CFG;
 
     $cdisplay = array('options'=>array());
 
     $cdisplay['limitanswers'] = true;
     $context = context_module::instance($coursemodule->id);
-
+    $filearea = 'option';
+    
     foreach ($choice->option as $optionid => $text) {
         if (isset($text)) { //make sure there are no dud entries in the db with blank text values.
             $option = new stdClass;
             $option->attributes = new stdClass;
             $option->attributes->value = $optionid;
-            $option->text = $text;
+            
+            $output = file_rewrite_pluginfile_urls($text,
+            		'pluginfile.php',
+            		$context->id,
+            		'mod_enhancedchoice',
+            		$filearea,
+            		$optionid);
+            
+            $formatoptions = array('overflowdiv'=>true, 'trusted'=>$CFG->enabletrusttext);
+            
+            $option->text = format_text($output, FORMAT_HTML, $formatoptions);
             $option->maxanswers = $choice->maxanswers[$optionid];
             $option->displaylayout = $choice->display;
 
@@ -355,9 +398,19 @@ function prepare_enhancedchoice_show_results($choice, $course, $cm, $allresponse
     //overwrite options value;
     $display->options = array();
     $totaluser = 0;
+    $filearea = 'option';
+    
+    $context = context_module::instance($cm->id);
+    
     foreach ($choice->option as $optionid => $optiontext) {
         $display->options[$optionid] = new stdClass;
-        $display->options[$optionid]->text = $optiontext;
+        $output = file_rewrite_pluginfile_urls($optiontext,
+        		'pluginfile.php',
+        		$context->id,
+        		'mod_enhancedchoice',
+        		$filearea,
+        		$optionid);
+        $display->options[$optionid]->text = $output;
         $display->options[$optionid]->maxanswer = $choice->maxanswers[$optionid];
 
         if (array_key_exists($optionid, $allresponses)) {
@@ -601,7 +654,18 @@ function enhancedchoice_get_option_text($choice, $id) {
     global $DB;
 
     if ($result = $DB->get_record("enhancedchoice_options", array("id" => $id))) {
-        return $result->text;
+    	if (! $cm = get_coursemodule_from_instance('enhancedchoice', $choice->id)) {
+    		print_error('invalidcoursemodule');
+    	}
+    	$context = context_module::instance($cm->id);
+    	$output = file_rewrite_pluginfile_urls($result->text,
+    			'pluginfile.php',
+    			 $context->id,
+    			'mod_enhancedchoice',
+    			'option',
+    			$id);
+    	
+        return $output;
     } else {
         return get_string("notanswered", "enhancedchoice");
     }
@@ -846,4 +910,46 @@ function enhancedchoice_get_completion_state($course, $cm, $userid, $type) {
 function enhancedchoice_page_type_list($pagetype, $parentcontext, $currentcontext) {
     $module_pagetype = array('mod-enhancedchoice-*'=>get_string('page-mod-enhancedchoice-x', 'enhancedchoice'));
     return $module_pagetype;
+}
+
+/**
+ * Serves the folder files.
+ *
+ * @package  mod_enhancedchoice
+ * @category files
+ * @param stdClass $course course object
+ * @param stdClass $cm course module
+ * @param stdClass $context context object
+ * @param string $filearea file area
+ * @param array $args extra arguments
+ * @param bool $forcedownload whether or not force download
+ * @param array $options additional options affecting the file serving
+ * @return bool false if file not found, does not return if found - just send the file
+ */
+function enhancedchoice_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+	global $CFG, $DB;
+
+	if ($context->contextlevel != CONTEXT_MODULE) {
+		return false;
+	}
+
+	require_course_login($course, true, $cm);
+	
+	if ($filearea !== 'option') {
+		// intro is handled automatically in pluginfile.php
+		return false;
+	}
+
+	$optionid = array_shift($args); // ignore revision - designed to prevent caching problems only
+
+	$fs = get_file_storage();
+	$relativepath = implode('/', $args);
+	$fullpath = "/$context->id/mod_enhancedchoice/$filearea/$optionid/$relativepath";
+	if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+		return false;
+	}
+
+	// finally send the file
+	// for folder module, we force download file all the time
+	send_stored_file($file, 86400, 0, true, $options);
 }
