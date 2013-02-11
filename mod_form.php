@@ -127,21 +127,24 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
             $idx = 0; 
             foreach (array_keys($options) as $key){
             	
-            	$draftid = file_get_submitted_draft_itemid('option['.$idx.']');
+            	$draftid = file_get_submitted_draft_itemid('option['.$key.']');
             	
-            	$defaulttext = file_prepare_draft_area($draftid, $this->context->id,
-            			'mod_enhancedchoice', 'option', 0,
+            	$defaulttext = file_prepare_draft_area($draftid, 
+            			$this->context->id,
+            			'mod_enhancedchoice', 
+            			'option', 
+            			!empty($choiceids[$key]) ? (int) $choiceids[$key] : null, // Itemid.,
             			$editoroptions,
             			$options[$key]->text);
             	$default_values['option['.$key.']']['text'] = $defaulttext;
-            	$default_values['option['.$key.']']['id'] = $draftid;
+            	$default_values['option['.$key.']']['itemid'] = $draftid;
             	
                 $default_values['limit['.$key.']'] = $options2[$key];
                 $default_values['optionid['.$key.']'] = $choiceids[$key];
                 
                 $idx++;
             }
-        } 
+        }
         
         if (empty($default_values['timeopen'])) {
             $default_values['timerestrict'] = 0;
