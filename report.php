@@ -125,7 +125,7 @@
                     $myxls->write_string($row,3,$ug2);
 
                     if (isset($option_text)) {
-                        $myxls->write_string($row,4,format_string($option_text,true));
+                        $myxls->write_string($row,4,$option_text);
                     }
                     $row++;
                     $pos=4;
@@ -178,7 +178,7 @@
                     }
                     $myxls->write_string($row,3,$ug2);
                     if (isset($option_text)) {
-                        $myxls->write_string($row,4,format_string($option_text,true));
+                        $myxls->write_string($row,4,$option_text);
                     }
                     $row++;
                 }
@@ -227,7 +227,7 @@
                     }
                     echo $ug2. "\t";
                     if (isset($option_text)) {
-                        echo format_string($option_text,true);
+                        echo $option_text;
                     }
                     echo "\n";
                 }
