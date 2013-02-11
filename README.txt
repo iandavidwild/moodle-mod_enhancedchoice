@@ -17,6 +17,7 @@ VERSION HISTORY
 ------- -------
 
 09-02-2013	0.1	First release.
+11-02-2013	0.2	Fix numerous bugs to embedded file handling.
 
 KNOWN PROBLEMS
 ----- --------
