@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2013020400;       // The current module version (Date: YYYYMMDDXX)
+$module->version   = 2013020401;       // The current module version (Date: YYYYMMDDXX)
 $module->requires  = 2011070100;    // Requires this Moodle version (2.1)
 $module->component = 'mod_enhancedchoice';     // Full name of the plugin (used for diagnostics)
 $module->maturity  = MATURITY_ALPHA;	// How stable the plugin is
-$module->release   = '0.1 (Build: 2013020900)';  // Human-readable version name
+$module->release   = '0.2 (Build: 2013021000)';  // Human-readable version name
 $module->cron      = 0;
