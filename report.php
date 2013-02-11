@@ -210,7 +210,7 @@
         $i=0;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = enhancedchoice_get_option_text($choice, $option));
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     echo $user->lastname;
                     echo "\t".$user->firstname;
