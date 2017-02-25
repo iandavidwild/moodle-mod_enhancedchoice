@@ -63,8 +63,15 @@
     $strchoices = get_string("modulenameplural", "enhancedchoice");
     $strresponses = get_string("responses", "enhancedchoice");
 
-    add_to_log($course->id, "enhancedchoice", "report", "report.php?id=$cm->id", "$choice->id",$cm->id);
-
+    $eventdata = array();
+    $eventdata['objectid'] = $choice->id;
+    $eventdata['context'] = $context;
+    $eventdata['courseid'] = $course->id;
+    $eventdata['other']['content'] = 'choicereportcontentviewed';
+    
+    $event = \mod_choice\event\report_viewed::create($eventdata);
+    $event->trigger();
+    
     if (data_submitted() && $action == 'delete' && has_capability('mod/enhancedchoice:deleteresponses',$context) && confirm_sesskey()) {
         enhancedchoice_delete_responses($attemptids, $choice, $cm, $course); //delete responses.
         redirect("report.php?id=$cm->id");
@@ -83,6 +90,16 @@
         }
     } else {
         $groupmode = groups_get_activity_groupmode($cm);
+        
+        // Trigger the report downloaded event.
+        $eventdata = array();
+        $eventdata['context'] = $context;
+        $eventdata['courseid'] = $course->id;
+        $eventdata['other']['content'] = 'enhancedchoicereportcontentviewed';
+        $eventdata['other']['format'] = $download;
+        $eventdata['other']['choiceid'] = $choice->id;
+        $event = \mod_choice\event\report_downloaded::create($eventdata);
+        $event->trigger();
     }
     $users = enhancedchoice_get_response_data($choice, $cm, $groupmode);
 
@@ -103,14 +120,14 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choice","enhancedchoice"));
+        $myxls->write_string(0,4,get_string("enhancedchoice","enhancedchoice"));
 
     /// generate the data for the body of the spreadsheet
         $i=0;
         $row=1;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     $myxls->write_string($row,0,$user->lastname);
                     $myxls->write_string($row,1,$user->firstname);
@@ -125,7 +142,7 @@
                     $myxls->write_string($row,3,$ug2);
 
                     if (isset($option_text)) {
-                        $myxls->write_string($row,4,format_string($option_text,true));
+                        $myxls->write_string($row,4,$option_text);
                     }
                     $row++;
                     $pos=4;
@@ -156,7 +173,7 @@
         $myxls->write_string(0,1,get_string("firstname"));
         $myxls->write_string(0,2,get_string("idnumber"));
         $myxls->write_string(0,3,get_string("group"));
-        $myxls->write_string(0,4,get_string("choice","enhancedchoice"));
+        $myxls->write_string(0,4,get_string("enhancedchoice","enhancedchoice"));
 
 
     /// generate the data for the body of the spreadsheet
@@ -164,7 +181,7 @@
         $row=1;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     $myxls->write_string($row,0,$user->lastname);
                     $myxls->write_string($row,1,$user->firstname);
@@ -178,7 +195,7 @@
                     }
                     $myxls->write_string($row,3,$ug2);
                     if (isset($option_text)) {
-                        $myxls->write_string($row,4,format_string($option_text,true));
+                        $myxls->write_string($row,4,$option_text);
                     }
                     $row++;
                 }
@@ -204,13 +221,13 @@
 
         echo get_string("firstname")."\t".get_string("lastname") . "\t". get_string("idnumber") . "\t";
         echo get_string("group"). "\t";
-        echo get_string("choice","enhancedchoice"). "\n";
+        echo get_string("enhancedchoice","enhancedchoice"). "\n";
 
         /// generate the data for the body of the spreadsheet
         $i=0;
         if ($users) {
             foreach ($users as $option => $userid) {
-                $option_text = choice_get_option_text($choice, $option);
+                $option_text = enhancedchoice_get_option_text($choice, $option);
                 foreach($userid as $user) {
                     echo $user->lastname;
                     echo "\t".$user->firstname;
@@ -227,7 +244,7 @@
                     }
                     echo $ug2. "\t";
                     if (isset($option_text)) {
-                        echo format_string($option_text,true);
+                        echo $option_text;
                     }
                     echo "\n";
                 }

@@ -16,7 +16,7 @@
 
 /**
  * @package    mod_enhancedchoice
- * @copyright  2013 Ian David Wild {@link http://heavy-horse.co.uk}
+ * @copyright  2017 Ian David Wild {@link http://heavy-horse.co.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,7 +27,7 @@ if (!defined('MOODLE_INTERNAL')) {
 require_once ($CFG->dirroot.'/course/moodleform_mod.php');
 
 class mod_enhancedchoice_mod_form extends moodleform_mod {
-
+	
     function definition() {
         global $CFG, $ENHANCEDCHOICE_SHOWRESULTS, $ENHANCEDCHOICE_PUBLISH, $ENHANCEDCHOICE_DISPLAY, $DB;
 
@@ -44,12 +44,12 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor(true, get_string('chatintro', 'chat'));
+        $this->standard_intro_elements(get_string('description', 'enhancedchoice'));
 
 //-------------------------------------------------------------------------------
         $repeatarray = array();
         $repeatarray[] = $mform->createElement('header', '', get_string('option','enhancedchoice').' {no}');
-        $repeatarray[] = $mform->createElement('editor', 'option', get_string('option','enhancedchoice'), null, array('maxfiles'=>EDITOR_UNLIMITED_FILES, 'noclean'=>true));
+        $repeatarray[] = $mform->createElement('editor', 'option', get_string('option','enhancedchoice'), null, array('maxfiles'=>EDITOR_UNLIMITED_FILES, 'noclean'=>true, 'context'=>$this->context));
         $repeatarray[] = $mform->createElement('text', 'limit', get_string('limit','enhancedchoice'));
         $repeatarray[] = $mform->createElement('hidden', 'optionid', 0);
 
@@ -71,17 +71,13 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
         $repeateloptions['limit']['rule'] = 'numeric';
-
+        $repeateloptions['limit']['type'] = PARAM_INT;
         $repeateloptions['option']['helpbutton'] = array('enhancedchoice_options', 'enhancedchoice');
-        $mform->setType('option', PARAM_CLEANHTML);
-
+        
         $mform->setType('optionid', PARAM_INT);
 
         $this->repeat_elements($repeatarray, $repeatno,
                     $repeateloptions, 'option_repeats', 'option_add_fields', 3);
-
-
-
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'timerestricthdr', get_string('timerestrict', 'enhancedchoice'));
@@ -116,19 +112,37 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
 
     function data_preprocessing(&$default_values){
         global $DB;
+        
         if (!empty($this->_instance) && ($options = $DB->get_records('enhancedchoice_options',array('choiceid'=>$this->_instance), 'id', 'id,text,textformat'))
                && ($options2 = $DB->get_records_menu('enhancedchoice_options', array('choiceid'=>$this->_instance), 'id', 'id,maxanswers')) ) {
             $choiceids=array_keys($options);
             $options=array_values($options);
             $options2=array_values($options2);
 
+            $editoroptions = enhancedchoice_get_editor_options();
+            
+            $idx = 0; 
             foreach (array_keys($options) as $key){
-                $default_values['option['.$key.']'] = $options[$key];
+            	
+            	$draftid = file_get_submitted_draft_itemid('option['.$key.']');
+            	
+            	$defaulttext = file_prepare_draft_area($draftid, 
+            			$this->context->id,
+            			'mod_enhancedchoice', 
+            			'option', 
+            			!empty($choiceids[$key]) ? (int) $choiceids[$key] : null, // Itemid.,
+            			$editoroptions,
+            			$options[$key]->text);
+            	$default_values['option['.$key.']']['text'] = $defaulttext;
+            	$default_values['option['.$key.']']['itemid'] = $draftid;
+            	
                 $default_values['limit['.$key.']'] = $options2[$key];
                 $default_values['optionid['.$key.']'] = $choiceids[$key];
+                
+                $idx++;
             }
-
         }
+        
         if (empty($default_values['timeopen'])) {
             $default_values['timerestrict'] = 0;
         } else {
@@ -142,7 +156,7 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
 
         $choices = 0;
         foreach ($data['option'] as $option){
-            if ($option != ''){
+            if ($option['text'] != ''){
                 $choices++;
             }
         }

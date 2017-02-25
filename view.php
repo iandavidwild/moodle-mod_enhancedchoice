@@ -74,10 +74,11 @@
         echo $OUTPUT->header();
     }
 
-
-/// Display the choice and possibly results
-    add_to_log($course->id, "enhancedchoice", "view", "view.php?id=$cm->id", $choice->id, $cm->id);
-
+    /// Display the choice and possibly results
+    $eventdata = array();
+    $eventdata['objectid'] = $choice->id;
+    $eventdata['context'] = $context;
+    
     /// Check to see if groups are being used in this choice
     $groupmode = groups_get_activity_groupmode($cm);
 
@@ -103,7 +104,7 @@
     //if user has already made a selection, and they are not allowed to update it or if choice is not open, show their selected answer.
     if (isloggedin() && ($current = $DB->get_record('enhancedchoice_answers', array('choiceid' => $choice->id, 'userid' => $USER->id))) &&
         (empty($choice->allowupdate) || ($timenow > $choice->timeclose)) ) {
-        echo $OUTPUT->box(get_string("yourselection", "enhancedchoice", userdate($choice->timeopen)).": ".clean_text(enhancedchoice_get_option_text($choice, $current->optionid)), 'generalbox', 'yourselection');
+        echo $OUTPUT->box(get_string("yourselection", "enhancedchoice", userdate($choice->timeopen)).": ".enhancedchoice_get_option_text($choice, $current->optionid), 'generalbox', 'yourselection');
     }
 
 /// Print the form

@@ -15,19 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Search area for mod_enhancedchoice activities.
  *
- * @package    mod
- * @subpackage enhancedchoice
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}, Ian David Wild {@link http://heavy-horse.co.uk}
+ * @package    mod_enhancedchoice
+ * @copyright  2017 Ian Wild
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_enhancedchoice\search;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017022801;       // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2016052300;    // Requires this Moodle version (3.1)
-$plugin->component = 'mod_enhancedchoice';     // Full name of the plugin (used for diagnostics)
-$plugin->maturity  = MATURITY_ALPHA;	// How stable the plugin is
-$plugin->release   = '0.3 (Build: 2017022500)';  // Human-readable version name
-$plugin->cron      = 0;
+/**
+ * Search area for mod_enhancedchoice activities.
+ *
+ * @package    mod_enhancedchoice
+ * @copyright  2017 Ian Wild
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class activity extends \core_search\area\base_activity {
+}

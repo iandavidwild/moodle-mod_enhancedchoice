@@ -53,7 +53,7 @@ class mod_enhancedchoice_renderer extends plugin_renderer_base {
             $option->attributes->name = 'answer';
             $option->attributes->type = 'radio';
             $option->attributes->id = 'choice_'.$choicecount;
-
+			
             $labeltext = $option->text;
             if (!empty($option->attributes->disabled)) {
                 $labeltext .= ' ' . get_string('full', 'choice');
@@ -173,7 +173,7 @@ class mod_enhancedchoice_renderer extends plugin_renderer_base {
             if ($choices->showunanswered && $optionid == 0) {
                 $celltext = format_string(get_string('notanswered', 'enhancedchoice'));
             } else if ($optionid > 0) {
-                $celltext = clean_text($choices->options[$optionid]->text);
+                $celltext = $choices->options[$optionid]->text;
             }
             $numberofuser = 0;
             if (!empty($options->user) && count($options->user) > 0) {
@@ -450,7 +450,6 @@ class mod_enhancedchoice_renderer extends plugin_renderer_base {
 
             $datacellnumber->text = $numberofuser;
             $datacellpercentage->text = format_float($percentageamount,1). '%';
-
 
             $row = new html_table_row();
             $row->cells = array($colheader, $datacellnumber, $datacellpercentage, $graphcell);
