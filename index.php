@@ -34,8 +34,11 @@
     require_course_login($course);
     $PAGE->set_pagelayout('incourse');
 
-    add_to_log($course->id, "enhancedchoice", "view all", "index.php?id=$course->id", "");
-
+    $eventdata = array('context' => context_course::instance($id));
+    $event = \mod_enhancedchoice\event\course_module_instance_list_viewed::create($eventdata);
+    $event->add_record_snapshot('course', $course);
+    $event->trigger();
+    
     $strchoice = get_string("modulename", "enhancedchoice");
     $strchoices = get_string("modulenameplural", "enhancedchoice");
     $strsectionname  = get_string('sectionname', 'format_'.$course->format);

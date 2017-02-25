@@ -1,5 +1,4 @@
-Enhanced Choice
--------- ------
+#Enhanced Choice activity for Moodle 2.4+
 
 The enhanced choice activity module enables a teacher to ask a single question and offer a selection of possible 
 media rich responses.
@@ -13,13 +12,22 @@ An enhanced choice activity may be used
 * To quickly test students\' understanding
 * To facilitate student decision-making, for example allowing students to vote on a direction for the course
 
-VERSION HISTORY
-------- -------
+#Install
+### Using a downloaded zip file
+You can download a zip of this module from: https://github.com/iandavidwild/moodle-mod_enhancedchoice/zipball/develop  
+Unzip it to your mod/ folder and rename the extracted folder to 'enhancedchoice'.
+### Using Git
+To install using git, run the following command from the root of your moodle installation:  
+git clone git://github.com/iandavidwild/moodle-mod_enhancedchoice.git mod/enhancedchoice  
+
+Then add mod/enhancedchoice to your gitignore.
+
+#Version history
 
 09-02-2013	0.1	First release.
 11-02-2013	0.2	Fix numerous bugs to embedded file handling.
+25-02-2017  0.3 Update for Moodle 3.1
 
-KNOWN PROBLEMS
------ --------
+#Known problems
 
-None reported.
+Please refer to issues log.

@@ -63,8 +63,15 @@
     $strchoices = get_string("modulenameplural", "enhancedchoice");
     $strresponses = get_string("responses", "enhancedchoice");
 
-    add_to_log($course->id, "enhancedchoice", "report", "report.php?id=$cm->id", "$choice->id",$cm->id);
-
+    $eventdata = array();
+    $eventdata['objectid'] = $choice->id;
+    $eventdata['context'] = $context;
+    $eventdata['courseid'] = $course->id;
+    $eventdata['other']['content'] = 'choicereportcontentviewed';
+    
+    $event = \mod_choice\event\report_viewed::create($eventdata);
+    $event->trigger();
+    
     if (data_submitted() && $action == 'delete' && has_capability('mod/enhancedchoice:deleteresponses',$context) && confirm_sesskey()) {
         enhancedchoice_delete_responses($attemptids, $choice, $cm, $course); //delete responses.
         redirect("report.php?id=$cm->id");
@@ -83,6 +90,16 @@
         }
     } else {
         $groupmode = groups_get_activity_groupmode($cm);
+        
+        // Trigger the report downloaded event.
+        $eventdata = array();
+        $eventdata['context'] = $context;
+        $eventdata['courseid'] = $course->id;
+        $eventdata['other']['content'] = 'enhancedchoicereportcontentviewed';
+        $eventdata['other']['format'] = $download;
+        $eventdata['other']['choiceid'] = $choice->id;
+        $event = \mod_choice\event\report_downloaded::create($eventdata);
+        $event->trigger();
     }
     $users = enhancedchoice_get_response_data($choice, $cm, $groupmode);
 
