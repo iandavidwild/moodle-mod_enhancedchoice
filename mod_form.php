@@ -16,7 +16,7 @@
 
 /**
  * @package    mod_enhancedchoice
- * @copyright  2013 Ian David Wild {@link http://heavy-horse.co.uk}
+ * @copyright  2017 Ian David Wild {@link http://heavy-horse.co.uk}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -44,7 +44,7 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor(true, get_string('chatintro', 'chat'));
+        $this->standard_intro_elements(get_string('description', 'enhancedchoice'));
 
 //-------------------------------------------------------------------------------
         $repeatarray = array();
@@ -71,6 +71,7 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
         $repeateloptions['limit']['default'] = 0;
         $repeateloptions['limit']['disabledif'] = array('limitanswers', 'eq', 0);
         $repeateloptions['limit']['rule'] = 'numeric';
+        $repeateloptions['limit']['type'] = PARAM_INT;
         $repeateloptions['option']['helpbutton'] = array('enhancedchoice_options', 'enhancedchoice');
         
 
