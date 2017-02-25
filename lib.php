@@ -331,13 +331,15 @@ WHERE
     }
 
     if (!($choice->limitanswers && ($countanswers >= $maxans) )) {
+        $answerupdated = false;
+        $answersnapshots = array();
         if ($current) {
-
             $newanswer = $current;
             $newanswer->optionid = $formanswer;
             $newanswer->timemodified = time();
             $DB->update_record("enhancedchoice_answers", $newanswer);
-            add_to_log($course->id, "choice", "choose again", "view.php?id=$cm->id", $choice->id, $cm->id);
+            $answerupdated = true;
+            $answersnapshots[] = $newanswer;
         } else {
             $newanswer = new stdClass();
             $newanswer->choiceid = $choice->id;
@@ -345,19 +347,45 @@ WHERE
             $newanswer->optionid = $formanswer;
             $newanswer->timemodified = time();
             $DB->insert_record("enhancedchoice_answers", $newanswer);
+            $answersnapshots[] = $newanswer;
 
             // Update completion state
             $completion = new completion_info($course);
             if ($completion->is_enabled($cm) && $choice->completionsubmit) {
                 $completion->update_state($cm, COMPLETION_COMPLETE);
             }
-            add_to_log($course->id, "enhancedchoice", "choose", "view.php?id=$cm->id", $choice->id, $cm->id);
+            
         }
+        // Now record completed event.
+        $eventdata = array();
+        $eventdata['context'] = $context;
+        $eventdata['objectid'] = $choice->id;
+        $eventdata['userid'] = $userid;
+        $eventdata['courseid'] = $course->id;
+        $eventdata['other'] = array();
+        $eventdata['other']['choiceid'] = $choice->id;
+    
+        if ($answerupdated) {
+            $eventdata['other']['optionid'] = $formanswer;
+            $event = \mod_choice\event\answer_updated::create($eventdata);
+        } else {
+            $eventdata['other']['optionid'] = $answers;
+            $event = \mod_choice\event\answer_submitted::create($eventdata);
+        }
+        $event->add_record_snapshot('course', $course);
+        $event->add_record_snapshot('course_modules', $cm);
+        $event->add_record_snapshot('enhancedchoice', $choice);
+        foreach ($answersnapshots as $record) {
+            $event->add_record_snapshot('enhancedchoice_answers', $record);
+        }
+        $event->trigger();
+    
     } else {
         if (!($current->optionid==$formanswer)) { //check to see if current choice already selected - if not display error
             print_error('choicefull', 'enhancedchoice');
         }
     }
+   
 }
 
 /**
@@ -952,4 +980,32 @@ function enhancedchoice_pluginfile($course, $cm, $context, $filearea, $args, $fo
 	// finally send the file
 	// for folder module, we force download file all the time
 	send_stored_file($file, 86400, 0, true, $options);
+}
+
+/**
+ * Mark the activity completed (if required) and trigger the course_module_viewed event.
+ *
+ * @param  stdClass $choice     choice object
+ * @param  stdClass $course     course object
+ * @param  stdClass $cm         course module object
+ * @param  stdClass $context    context object
+ * @since Moodle 3.1
+ */
+function enhancedchoice_view($choice, $course, $cm, $context) {
+
+    // Trigger course_module_viewed event.
+    $params = array(
+            'context' => $context,
+            'objectid' => $choice->id
+    );
+
+    $event = \mod_choice\event\course_module_viewed::create($params);
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('choice', $choice);
+    $event->trigger();
+
+    // Completion.
+    $completion = new completion_info($course);
+    $completion->set_module_viewed($cm);
 }
