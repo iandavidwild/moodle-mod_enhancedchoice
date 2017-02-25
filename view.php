@@ -74,10 +74,11 @@
         echo $OUTPUT->header();
     }
 
-
-/// Display the choice and possibly results
-    add_to_log($course->id, "enhancedchoice", "view", "view.php?id=$cm->id", $choice->id, $cm->id);
-
+    /// Display the choice and possibly results
+    $eventdata = array();
+    $eventdata['objectid'] = $choice->id;
+    $eventdata['context'] = $context;
+    
     /// Check to see if groups are being used in this choice
     $groupmode = groups_get_activity_groupmode($cm);
 
