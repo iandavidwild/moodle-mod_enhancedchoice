@@ -111,3 +111,4 @@ $string['eventanswerdeleted'] = 'Choice answer deleted';
 $string['eventanswerupdated'] = 'Choice updated';
 $string['eventreportdownloaded'] = 'Choice report downloaded';
 $string['eventreportviewed'] = 'Choice report viewed';
+$string['search:activity'] = 'Enhanced choice - activity information';
