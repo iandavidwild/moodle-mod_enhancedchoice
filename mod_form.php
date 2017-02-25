@@ -74,14 +74,10 @@ class mod_enhancedchoice_mod_form extends moodleform_mod {
         $repeateloptions['limit']['type'] = PARAM_INT;
         $repeateloptions['option']['helpbutton'] = array('enhancedchoice_options', 'enhancedchoice');
         
-
         $mform->setType('optionid', PARAM_INT);
 
         $this->repeat_elements($repeatarray, $repeatno,
                     $repeateloptions, 'option_repeats', 'option_add_fields', 3);
-
-
-
 
 //-------------------------------------------------------------------------------
         $mform->addElement('header', 'timerestricthdr', get_string('timerestrict', 'enhancedchoice'));
